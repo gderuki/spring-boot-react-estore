@@ -1,0 +1,8 @@
+# Don't forget to `source .projectrc`
+export SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/<table_name>
+export SPRING_DATASOURCE_USERNAME=<username>
+export SPRING_DATASOURCE_PASSWORD=<password>
+export POSTGRES_USER=<username>
+export POSTGRES_PASSWORD=<password>
+export GITHUB_CLIENT_ID=<client_id>
+export GITHUB_CLIENT_SECRET=<client
