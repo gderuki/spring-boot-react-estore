@@ -1,5 +1,6 @@
 /.projectrc
 .idea
+.vscode
 
 frontend.iml
 nginx.iml
