@@ -11,6 +11,7 @@ services:
     build: ./api
     ports:
       - '8080:8080'
+      - '5005:5005'
     container_name: api
     depends_on:
       - db
