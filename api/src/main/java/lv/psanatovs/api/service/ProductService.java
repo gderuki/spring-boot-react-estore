@@ -1,12 +1,12 @@
 package lv.psanatovs.api.service;
 
-import lv.psanatovs.api.entity.Product;
+import lv.psanatovs.api.dto.ProductInfoResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    List<Product> findAll();
-    Optional<Product> findById(String kebabCaseName);
+    List<ProductInfoResponseDTO> findAll();
+    Optional<ProductInfoResponseDTO> findById(String kebabCaseName);
 }
 
