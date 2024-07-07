@@ -1,6 +1,6 @@
 package lv.psanatovs.api.controller.v1;
 
-import lv.psanatovs.api.entity.Product;
+import lv.psanatovs.api.dto.ProductInfoResponseDTO;
 import lv.psanatovs.api.exception.ProductNotFoundException;
 import lv.psanatovs.api.response.ApiResponse;
 import lv.psanatovs.api.service.ProductService;
@@ -22,20 +22,38 @@ public class ProductControllerV1 {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<List<Product>>> findAll() {
-        List<Product> products = productService.findAll();
-        return new ResponseEntity<>(new ApiResponse<>(true, products), HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<ProductInfoResponseDTO>>> findAll() {
+        return
+                new ResponseEntity<>(
+                        new ApiResponse<>(
+                                true,
+                                productService.findAll()),
+                        HttpStatus.OK
+                );
     }
 
     @GetMapping(value = "/{kebabCaseName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<Product>> findById(@PathVariable String kebabCaseName) {
-        Product product = productService.findById(kebabCaseName)
-                .orElseThrow(() -> new ProductNotFoundException(kebabCaseName));
-        return new ResponseEntity<>(new ApiResponse<>(true, product), HttpStatus.OK);
+    public ResponseEntity<ApiResponse<ProductInfoResponseDTO>> findById(@PathVariable String kebabCaseName) {
+        return
+                new ResponseEntity<>(
+                        new ApiResponse<>(
+                                true,
+                                productService
+                                        .findById(kebabCaseName)
+                                        .orElseThrow(() -> new ProductNotFoundException(kebabCaseName))
+                        ),
+                        HttpStatus.OK
+                );
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleProductNotFoundException(ProductNotFoundException ex) {
-        return new ResponseEntity<>(new ApiResponse<>(false, "Product not found"), HttpStatus.NOT_FOUND);
+        return
+                new ResponseEntity<>(
+                        new ApiResponse<>(
+                                false,
+                                "Product not found"),
+                        HttpStatus.NOT_FOUND
+                );
     }
 }
