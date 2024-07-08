@@ -1,0 +1,39 @@
+schema {
+    query: Query
+}
+
+type Query {
+    getProduct(id: ID!): ProductInfo
+    getAllProducts: [ProductInfo!]
+}
+
+type ProductInfo {
+    id: ID!
+    name: String!
+    inStock: Boolean!
+    description: String
+    category: String
+    attributes: [AttributeSet!]
+    prices: [Price!]
+    gallery: [String!]
+}
+
+type AttributeSet {
+    name: String!
+    items: [AttributeItem!]
+}
+
+type AttributeItem {
+    value: String!
+    displayValue: String!
+}
+
+type Price {
+    amount: Float!
+    currency: Currency!
+}
+
+type Currency {
+    code: String!
+    symbol: String!
+}

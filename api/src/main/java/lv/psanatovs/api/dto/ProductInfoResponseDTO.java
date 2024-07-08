@@ -1,8 +1,6 @@
 package lv.psanatovs.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 

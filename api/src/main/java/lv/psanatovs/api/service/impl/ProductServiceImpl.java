@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
         var productOpt = productRepository.findByKebabCaseName(productId);
 
         if (productOpt.isEmpty()) {
-            throw new ProductNotFoundException("Product not found for id: " + productId);
+            throw new ProductNotFoundException(productId);
         }
 
         return modelToDto(productOpt.get());
