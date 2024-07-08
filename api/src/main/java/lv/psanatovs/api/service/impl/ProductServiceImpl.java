@@ -61,65 +61,62 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Optional<ProductInfoResponseDTO> modelToDto(Product product) {
-        var dto = new ProductInfoResponseDTO();
-        dto.setId(product.getKebabCaseName());
-        dto.setName(product.getName());
-        dto.setDescription(product.getDescription());
-        dto.setCategory(product.getCategory());
-        dto.setInStock(product.isInStock());
-
         // prices
         var prices = priceRepository.findByProductId(product.getId())
                 .stream()
                 .map(this::priceModelToDto)
                 .toList();
-        dto.setPrices(prices);
 
         // attributes
-        var attributes =
-                attributeRepository.findByProductId(product.getId())
-                        .stream()
-                        .map(this::attributeSetModelToDto)
-                        .toList();
-        dto.setAttributes(attributes);
+        var attributes = attributeRepository.findByProductId(product.getId())
+                .stream()
+                .map(this::attributeSetModelToDto)
+                .toList();
 
         // gallery
         var gallery = imageGalleryRepository.findByProductId(product.getId())
                 .stream()
                 .map(this::imageGalleryModelToDto)
                 .toList();
-        dto.setGallery(gallery);
+
+        var dto = new ProductInfoResponseDTO(
+                product.getKebabCaseName(),
+                product.getName(),
+                product.isInStock(),
+                product.getDescription(),
+                product.getCategory(),
+                attributes,
+                prices,
+                gallery
+        );
 
         return Optional.of(dto);
     }
 
     private PriceDTO priceModelToDto(Price price) {
-        var dto = new PriceDTO();
-
         var currency =
                 new CurrencyDTO(
                         price.getCurrency().getCode(),
                         price.getCurrency().getSymbol()
                 );
-        dto.setCurrency(currency);
-        dto.setAmount(price.getAmount().doubleValue());
 
-        return dto;
+        return new PriceDTO(
+                price.getAmount().doubleValue(),
+                currency
+        );
     }
 
     private AttributeSetDTO attributeSetModelToDto(AttributeSet attributeSet) {
-        var dto = new AttributeSetDTO();
-
-        dto.setName(attributeSet.getType().getName());
-        dto.setItems(attributeItemRepository
-                .findByAttributeSetId(attributeSet.getId()).stream().map(
-                attributeItem -> new AttributeItemDTO(
-                        attributeItem.getValue(),
-                        attributeItem.getDisplayValue()
-                )
-        ).toList());
-
-        return dto;
+        return new AttributeSetDTO(
+                attributeSet.getType().getName(),
+                attributeItemRepository
+                        .findByAttributeSetId(attributeSet.getId()).stream().map(
+                                attributeItem -> new AttributeItemDTO(
+                                        attributeItem.getValue(),
+                                        attributeItem.getDisplayValue()
+                                )
+                        ).toList()
+        );
     }
 
     private String imageGalleryModelToDto(ImageGallery imageGallery) {

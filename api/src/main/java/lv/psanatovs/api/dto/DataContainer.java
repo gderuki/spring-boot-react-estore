@@ -8,8 +8,8 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Getter
-public class DataContainer {
-    public List<CategoryDTO> categories;
-    public List<ProductDTO> products;
+public record DataContainer(
+        List<CategoryDTO> categories,
+        List<ProductDTO> products
+) {
 }
