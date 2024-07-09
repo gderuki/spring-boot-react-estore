@@ -20,4 +20,9 @@ public class AttributeItem {
     @ManyToOne
     @JoinColumn(name = "attribute_set_id")
     private AttributeSet attributeSet;
+
+    public AttributeItem(String value, String displayValue) {
+        this.value = value;
+        this.displayValue = displayValue;
+    }
 }

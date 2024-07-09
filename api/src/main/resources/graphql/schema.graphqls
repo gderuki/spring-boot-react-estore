@@ -1,0 +1,53 @@
+schema {
+    query: Query
+}
+
+type Mutation {
+    placeOrder(product: ProductInput): Boolean!
+}
+
+input ProductInput {
+    productId: String!
+    quantity: Int!
+}
+
+type Query {
+    getProduct(id: String!): ProductInfo
+    getAllProducts: [ProductInfo!]
+    getAllCategories: [Category!]
+}
+
+type Category {
+    name: String!
+}
+
+type ProductInfo {
+    id: String!
+    name: String!
+    inStock: Boolean!
+    description: String
+    category: String
+    attributes: [AttributeSet!]
+    prices: [Price!]
+    gallery: [String!]
+}
+
+type AttributeSet {
+    name: String!
+    items: [AttributeItem!]
+}
+
+type AttributeItem {
+    value: String!
+    displayValue: String!
+}
+
+type Price {
+    amount: Float!
+    currency: Currency!
+}
+
+type Currency {
+    label: String!
+    symbol: String!
+}

@@ -7,15 +7,14 @@ import lombok.Setter;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"__typename"})
-@Getter
-@Setter
-public class ProductDTO {
-    public String id;
-    public String name;
-    public boolean inStock;
-    public List<String> gallery;
-    public String description;
-    public String category;
-    public List<AttributeSetDTO> attributes;
-    public List<PriceDTO> prices;
+public record ProductDTO(
+        String id,
+        String name,
+        boolean inStock,
+        List<String> gallery,
+        String description,
+        String category,
+        List<AttributeSetDTO> attributes,
+        List<PriceDTO> prices
+) {
 }

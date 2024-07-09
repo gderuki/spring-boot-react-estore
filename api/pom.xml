@@ -69,6 +69,11 @@
             <version>${commons.text.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

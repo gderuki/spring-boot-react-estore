@@ -2,9 +2,8 @@ package lv.psanatovs.api.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lv.psanatovs.api.dto.*;
+import lv.psanatovs.api.entity.Category;
 import lv.psanatovs.api.entity.ImageGallery;
 import lv.psanatovs.api.entity.Product;
 import lv.psanatovs.api.entity.attribute.AttributeItem;
@@ -12,6 +11,7 @@ import lv.psanatovs.api.entity.attribute.AttributeSet;
 import lv.psanatovs.api.entity.attribute.AttributeSetType;
 import lv.psanatovs.api.entity.price.Currency;
 import lv.psanatovs.api.entity.price.Price;
+import lv.psanatovs.api.repository.CategoryRepository;
 import lv.psanatovs.api.repository.ImageGalleryRepository;
 import lv.psanatovs.api.repository.attribute.AttributeItemRepository;
 import lv.psanatovs.api.repository.attribute.AttributeSetRepository;
@@ -33,9 +33,6 @@ import java.math.BigDecimal;
 public class DataSeeder {
     private static final Logger logger = LoggerFactory.getLogger(DataSeeder.class);
 
-
-    @PersistenceContext
-    private final EntityManager entityManager;
     private final ProductRepository productRepository; // Assuming you have a repository
     private final AttributeSetRepository attributeSetRepository;
     private final AttributeSetTypeRepository attributeSetTypeRepository;
@@ -43,17 +40,17 @@ public class DataSeeder {
     private final CurrencyRepository currencyRepository;
     private final PriceRepository priceRepository;
     private final ImageGalleryRepository imageGalleryRepository;
+    private final CategoryRepository categoryRepository;
 
     public DataSeeder(
-            EntityManager entityManager, ProductRepository productRepository,
+            ProductRepository productRepository,
             AttributeSetRepository attributeSetRepository,
             AttributeSetTypeRepository attributeSetTypeRepository,
             AttributeItemRepository attributeItemRepository,
             CurrencyRepository currencyRepository,
             PriceRepository priceRepository,
-            ImageGalleryRepository imageGalleryRepository
-    ) {
-        this.entityManager = entityManager;
+            ImageGalleryRepository imageGalleryRepository,
+            CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.attributeSetRepository = attributeSetRepository;
         this.attributeSetTypeRepository = attributeSetTypeRepository;
@@ -61,6 +58,7 @@ public class DataSeeder {
         this.currencyRepository = currencyRepository;
         this.priceRepository = priceRepository;
         this.imageGalleryRepository = imageGalleryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostConstruct
@@ -81,23 +79,27 @@ public class DataSeeder {
             var inputStream = getClass().getClassLoader().getResourceAsStream(SAMPLE_DATA_JSON);
             var json = mapper.readValue(inputStream, DataWrapper.class);
 
-            for (ProductDTO productDTO : json.getData().getProducts()) {
+            for (CategoryDTO categoryDTO : json.data().categories()) {
+                 categoryRepository.save(mapCategoryDTOToEntity(categoryDTO));
+            }
+
+            for (ProductDTO productDTO : json.data().products()) {
                 var product = mapProductDTOToEntity(productDTO);
                 productRepository.save(product);
 
-                for (PriceDTO priceDTO : productDTO.getPrices()) {
+                for (PriceDTO priceDTO : productDTO.prices()) {
                     var price = mapPriceDTOToEntity(priceDTO, product);
                     priceRepository.save(price);
                 }
 
-                for (String url : productDTO.getGallery()) {
+                for (String url : productDTO.gallery()) {
                     var imageGallery = new ImageGallery();
                     imageGallery.setImageUrl(url);
                     imageGallery.setProduct(product);
                     imageGalleryRepository.save(imageGallery);
                 }
 
-                for (AttributeSetDTO attributeSetDTO : productDTO.getAttributes()) {
+                for (AttributeSetDTO attributeSetDTO : productDTO.attributes()) {
                     var attributeSet = mapAttributeSetDTOToEntity(attributeSetDTO, product);
                     attributeSetRepository.save(attributeSet);
                 }
@@ -113,13 +115,17 @@ public class DataSeeder {
         }
     }
 
+    private static Category mapCategoryDTOToEntity(CategoryDTO category) {
+        return new Category(category.name());
+    }
+
     private static Product mapProductDTOToEntity(ProductDTO productDTO) {
         var product = new Product();
 
-        product.setName(productDTO.name);
-        product.setInStock(productDTO.inStock);
-        product.setDescription(productDTO.description);
-        product.setCategory(productDTO.category);
+        product.setName(productDTO.name());
+        product.setInStock(productDTO.inStock());
+        product.setDescription(productDTO.description());
+        product.setCategory(productDTO.category());
 
         return product;
     }
@@ -127,13 +133,13 @@ public class DataSeeder {
     private Price mapPriceDTOToEntity(PriceDTO priceDTO, Product product) {
         var price = new Price();
 
-        price.setAmount(BigDecimal.valueOf(priceDTO.getAmount()));
+        price.setAmount(BigDecimal.valueOf(priceDTO.amount()));
         price.setProduct(product);
-        var currency = currencyRepository.findByCode(priceDTO.getCurrency().getLabel())
+        var currency = currencyRepository.findByCode(priceDTO.currency().label())
                 .orElseGet(() -> {
                     var newCurrency = new Currency();
-                    newCurrency.setCode(priceDTO.getCurrency().getLabel());
-                    newCurrency.setSymbol(priceDTO.getCurrency().getSymbol());
+                    newCurrency.setCode(priceDTO.currency().label());
+                    newCurrency.setSymbol(priceDTO.currency().symbol());
                     return currencyRepository.save(newCurrency); // This ensures the Currency is managed
                 });
         price.setCurrency(currency);
@@ -144,47 +150,24 @@ public class DataSeeder {
     private AttributeSet mapAttributeSetDTOToEntity(AttributeSetDTO attributeSetDTO, Product product) {
         var attributeSet = new AttributeSet();
 
-        var type = attributeSetTypeRepository.findByName(attributeSetDTO.getName())
+        var type = attributeSetTypeRepository.findByName(attributeSetDTO.name())
                 .orElseGet(() ->
                         {
-                            var typeEntity = new AttributeSetType(attributeSetDTO.getName());
+                            var typeEntity = new AttributeSetType(attributeSetDTO.name());
                             return attributeSetTypeRepository.save(typeEntity);
                         }
                 );
         attributeSet.setProduct(product);
         attributeSet.setType(type);
         var savedAttributeSet = attributeSetRepository.save(attributeSet);
-        for (AttributeItemDTO itemDTO : attributeSetDTO.getItems()) {
+        for (AttributeItemDTO itemDTO : attributeSetDTO.items()) {
             AttributeItem item = new AttributeItem();
-            item.setValue(itemDTO.getValue());
-            item.setDisplayValue(itemDTO.getDisplayValue());
-            // Associate the item with the saved AttributeSet
+            item.setValue(itemDTO.value());
+            item.setDisplayValue(itemDTO.displayValue());
             item.setAttributeSet(savedAttributeSet);
             attributeItemRepository.save(item);
         }
 
         return savedAttributeSet;
     }
-//    private AttributeSet mapAttributeSetDTOToEntity(AttributeSetDTO attributeSetDTO, Product product) {
-//        var attributeSet = new AttributeSet();
-//
-//        for (AttributeItemDTO itemDTO : attributeSetDTO.getItems()) {
-//            AttributeItem item = new AttributeItem();
-//            item.setValue(itemDTO.getValue());
-//            item.setDisplayValue(itemDTO.getDisplayValue());
-//            item.setAttributeSet(attributeSet);
-//            attributeItemRepository.save(item);
-//        }
-//        var type = attributeSetTypeRepository.findByName(attributeSetDTO.getName())
-//                .orElseGet(
-//                        () ->
-//                                attributeSetTypeRepository.save(
-//                                        new AttributeSetType(attributeSetDTO.getName())
-//                                )
-//                );
-//        attributeSet.setProduct(product);
-//        attributeSet.setType(type);
-//
-//        return attributeSet;
-//    }
 }

@@ -7,9 +7,9 @@ import lombok.Setter;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"__typename"})
-@Getter
-@Setter
-public class AttributeSetDTO {
-    public String name;
-    public List<AttributeItemDTO> items;
+public record AttributeSetDTO(
+        Long id,
+        String name,
+        List<AttributeItemDTO> items
+) {
 }

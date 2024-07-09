@@ -1,7 +1,15 @@
 package lv.psanatovs.api.exception;
 
+import lombok.Getter;
+
+import java.util.UUID;
+
+@Getter
 public class ProductNotFoundException extends RuntimeException {
-    public ProductNotFoundException(String kebabCaseName) {
-        super("Product not found with id: " + kebabCaseName);
+    private final String errorId;
+
+    public ProductNotFoundException(String productId) {
+        super("Product not found with id: " + productId);
+        this.errorId = UUID.randomUUID().toString();
     }
 }
