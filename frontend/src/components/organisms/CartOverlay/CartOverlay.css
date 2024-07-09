@@ -1,0 +1,127 @@
+.cart-overlay {
+  position: absolute;
+  width: 350px;
+  background-color: white;
+  z-index: 101;
+  padding: 10px 20px 20px 20px;
+  top: 81px;
+  right: calc((100vw - 973px) / 2);
+  border: none;
+  box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.quantity-btn {
+  background-color: #f1f1f1;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.quantity {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+
+.product-row {
+  display: grid;
+  grid-template-columns: minmax(166px, auto) 2fr 1fr;
+  gap: 20px;
+}
+
+.product-info-block,
+.quantity-control,
+.image-block {
+  flex: 1;
+  padding-left: 3px;
+}
+
+.quantity-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-block img {
+  width: 100%;
+}
+
+/* Custom scrollbar for webkit browsers */
+.products-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.products-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.products-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 0px;
+  height: 120px;
+}
+
+.products-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.products-list {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.products-list::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  height: 20px;
+  background: #FFF;
+}
+
+.product-delimiter {
+  border: none;
+  border-top: 2px solid #e9e9e9;
+  margin: 12px 0;
+  height: 0;
+}
+
+.cart-heading {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.product-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.place-order-button {
+  margin-top:20px;
+  width: 100%;
+  height: 48px;
+  color: white;
+  cursor: pointer;
+  background-color: #5ECE7B;
+  border: 1px solid #e9e9e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.place-order-button.disabled {
+  background-color: grey;
+  color: white;
+  cursor: not-allowed;
+}

@@ -1,0 +1,10 @@
+.price-tag-heading {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.price-tag-value {
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 1.35rem;
+}

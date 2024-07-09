@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"__typename"})
 public record AttributeItemDTO(
+        Long id,
         String value,
         String displayValue
 ) {

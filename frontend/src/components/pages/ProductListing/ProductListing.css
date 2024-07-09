@@ -1,0 +1,13 @@
+.product-listing {
+  justify-content: center;
+  max-width: 993px;
+  margin: 0 auto;
+}
+
+.product-listing .product-title {
+  text-transform: capitalize;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-left: 10px;
+}

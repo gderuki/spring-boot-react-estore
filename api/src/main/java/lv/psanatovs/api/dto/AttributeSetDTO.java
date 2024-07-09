@@ -8,6 +8,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"__typename"})
 public record AttributeSetDTO(
+        Long id,
         String name,
         List<AttributeItemDTO> items
 ) {

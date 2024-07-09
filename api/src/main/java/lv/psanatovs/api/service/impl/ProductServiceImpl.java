@@ -108,10 +108,12 @@ public class ProductServiceImpl implements ProductService {
 
     private AttributeSetDTO attributeSetModelToDto(AttributeSet attributeSet) {
         return new AttributeSetDTO(
+                attributeSet.getId(),
                 attributeSet.getType().getName(),
                 attributeItemRepository
                         .findByAttributeSetId(attributeSet.getId()).stream().map(
                                 attributeItem -> new AttributeItemDTO(
+                                        attributeItem.getId(),
                                         attributeItem.getValue(),
                                         attributeItem.getDisplayValue()
                                 )

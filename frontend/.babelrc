@@ -1,0 +1,21 @@
+{
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "atoms": "./src/components/atoms",
+          "organisms": "./src/components/organisms",
+          "molecules": "./src/components/molecules",
+          "pages": "./src/components/pages",
+          "constants": "./src/constants",
+          "helpers": "./src/helpers",
+          "contexts": "./src/contexts",
+          "hoc": "./src/hoc",
+          "graphql": "./src/graphql",
+          "services": "./src/services"
+        }
+      }
+    ]
+  ]
+}

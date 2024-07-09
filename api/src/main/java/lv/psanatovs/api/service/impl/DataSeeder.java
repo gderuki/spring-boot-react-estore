@@ -3,6 +3,7 @@ package lv.psanatovs.api.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lv.psanatovs.api.dto.*;
+import lv.psanatovs.api.entity.Category;
 import lv.psanatovs.api.entity.ImageGallery;
 import lv.psanatovs.api.entity.Product;
 import lv.psanatovs.api.entity.attribute.AttributeItem;
@@ -10,6 +11,7 @@ import lv.psanatovs.api.entity.attribute.AttributeSet;
 import lv.psanatovs.api.entity.attribute.AttributeSetType;
 import lv.psanatovs.api.entity.price.Currency;
 import lv.psanatovs.api.entity.price.Price;
+import lv.psanatovs.api.repository.CategoryRepository;
 import lv.psanatovs.api.repository.ImageGalleryRepository;
 import lv.psanatovs.api.repository.attribute.AttributeItemRepository;
 import lv.psanatovs.api.repository.attribute.AttributeSetRepository;
@@ -38,6 +40,7 @@ public class DataSeeder {
     private final CurrencyRepository currencyRepository;
     private final PriceRepository priceRepository;
     private final ImageGalleryRepository imageGalleryRepository;
+    private final CategoryRepository categoryRepository;
 
     public DataSeeder(
             ProductRepository productRepository,
@@ -46,8 +49,8 @@ public class DataSeeder {
             AttributeItemRepository attributeItemRepository,
             CurrencyRepository currencyRepository,
             PriceRepository priceRepository,
-            ImageGalleryRepository imageGalleryRepository
-    ) {
+            ImageGalleryRepository imageGalleryRepository,
+            CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.attributeSetRepository = attributeSetRepository;
         this.attributeSetTypeRepository = attributeSetTypeRepository;
@@ -55,6 +58,7 @@ public class DataSeeder {
         this.currencyRepository = currencyRepository;
         this.priceRepository = priceRepository;
         this.imageGalleryRepository = imageGalleryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostConstruct
@@ -74,6 +78,10 @@ public class DataSeeder {
             final String SAMPLE_DATA_JSON = "data.json";
             var inputStream = getClass().getClassLoader().getResourceAsStream(SAMPLE_DATA_JSON);
             var json = mapper.readValue(inputStream, DataWrapper.class);
+
+            for (CategoryDTO categoryDTO : json.data().categories()) {
+                 categoryRepository.save(mapCategoryDTOToEntity(categoryDTO));
+            }
 
             for (ProductDTO productDTO : json.data().products()) {
                 var product = mapProductDTOToEntity(productDTO);
@@ -105,6 +113,10 @@ public class DataSeeder {
         } catch (Exception e) {
             logger.error("Unexpected error occurred", e);
         }
+    }
+
+    private static Category mapCategoryDTOToEntity(CategoryDTO category) {
+        return new Category(category.name());
     }
 
     private static Product mapProductDTOToEntity(ProductDTO productDTO) {
@@ -152,7 +164,6 @@ public class DataSeeder {
             AttributeItem item = new AttributeItem();
             item.setValue(itemDTO.value());
             item.setDisplayValue(itemDTO.displayValue());
-            // Associate the item with the saved AttributeSet
             item.setAttributeSet(savedAttributeSet);
             attributeItemRepository.save(item);
         }

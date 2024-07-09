@@ -1,0 +1,80 @@
+.attribute-heading {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.item-container {
+  display: flex;
+  gap: 10px;
+}
+
+.noclick {
+  pointer-events: none;
+}
+
+.item-text {
+  cursor: pointer;
+  border: 1px solid #1D1F22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 8px 15px;
+  font-size: 0.8rem;
+}
+.item-text.small {
+  padding: 4px 8px;
+  font-size: 0.6rem;
+  border-width: 0.5px;
+}
+.item-color.small {
+  border-width: 0.5px;
+}
+
+.item-text.active {
+  background-color: #1D1F22;
+  color: white;
+}
+
+.item-color {
+  cursor: pointer;
+  position: relative;
+  padding: 5px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #1D1F22;
+  box-sizing: border-box;
+}
+
+.item-color:before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2x solid transparent;
+  box-sizing: border-box;
+}
+
+.item-color:after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+}
+
+.item-color.active:before {
+  border-color: #5AEE87;
+  border-width: 2px;
+}
+
+.item-color.active:after {
+  border-color: #5AEE87;
+  border-width: 2px;
+}

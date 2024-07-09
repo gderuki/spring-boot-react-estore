@@ -2,13 +2,27 @@ schema {
     query: Query
 }
 
+type Mutation {
+    placeOrder(product: ProductInput): Boolean!
+}
+
+input ProductInput {
+    productId: String!
+    quantity: Int!
+}
+
 type Query {
-    getProduct(id: ID!): ProductInfo
+    getProduct(id: String!): ProductInfo
     getAllProducts: [ProductInfo!]
+    getAllCategories: [Category!]
+}
+
+type Category {
+    name: String!
 }
 
 type ProductInfo {
-    id: ID!
+    id: String!
     name: String!
     inStock: Boolean!
     description: String
@@ -34,6 +48,6 @@ type Price {
 }
 
 type Currency {
-    code: String!
+    label: String!
     symbol: String!
 }
